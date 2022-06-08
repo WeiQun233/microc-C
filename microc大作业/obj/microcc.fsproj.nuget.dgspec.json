@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\machine.csproj": {}
+    "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\microcc.fsproj": {}
   },
   "projects": {
-    "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\machine.csproj": {
+    "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\microcc.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\machine.csproj",
-        "projectName": "machine",
-        "projectPath": "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\machine.csproj",
+        "projectUniqueName": "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\microcc.fsproj",
+        "projectName": "microcc",
+        "projectPath": "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\microcc.fsproj",
         "packagesPath": "C:\\Users\\86135\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\86135\\Desktop\\编程语言\\microc大作业\\obj\\",
         "projectStyle": "PackageReference",
@@ -27,16 +27,24 @@
             "targetAlias": "net5.0",
             "projectReferences": {}
           }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
         }
       },
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[6.0.2, )",
+              "generatePathProperty": true
+            },
+            "FsLexYacc": {
+              "target": "Package",
+              "version": "[10.0.0, )",
+              "generatePathProperty": true
+            }
+          },
           "imports": [
             "net461",
             "net462",

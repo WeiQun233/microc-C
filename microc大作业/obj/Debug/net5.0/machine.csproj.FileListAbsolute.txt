@@ -14,3 +14,8 @@ C:\Users\86135\Desktop\编程语言\microc\obj\Debug\net5.0\refint\machine.dll
 C:\Users\86135\Desktop\编程语言\microc\obj\Debug\net5.0\machine.pdb
 C:\Users\86135\Desktop\编程语言\microc\obj\Debug\net5.0\machine.genruntimeconfig.cache
 C:\Users\86135\Desktop\编程语言\microc\obj\Debug\net5.0\ref\machine.dll
+C:\Users\86135\Desktop\编程语言\microc大作业\obj\Debug\net5.0\machine.csproj.AssemblyReference.cache
+C:\Users\86135\Desktop\编程语言\microc大作业\obj\Debug\net5.0\machine.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\86135\Desktop\编程语言\microc大作业\obj\Debug\net5.0\machine.AssemblyInfoInputs.cache
+C:\Users\86135\Desktop\编程语言\microc大作业\obj\Debug\net5.0\machine.AssemblyInfo.cs
+C:\Users\86135\Desktop\编程语言\microc大作业\obj\Debug\net5.0\machine.csproj.CoreCompileInputs.cache

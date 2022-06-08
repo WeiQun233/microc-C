@@ -3,5 +3,5 @@ int main(int n) {
     n -= 1 ;
     print (n);
   }  
-  while (n > 0 );
+  until (n > 0 );
 }

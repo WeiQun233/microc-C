@@ -154,6 +154,7 @@ StmtU:
   | IF LPAR Expr RPAR Stmt              { If($3, $5, Block []) }
   | WHILE LPAR Expr RPAR StmtU          { While($3, $5)        }
   | DO StmtU WHILE LPAR Expr RPAR SEMI  { DoWhile($2, $5)      }
+  | DO StmtU UNTIL LPAR Expr RPAR SEMI  { Dountil($2,$5)       }
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtU  { For($3, $5, $7, $9) }
   | FOR Expr IN RANGE LPAR Expr COMMA Expr RPAR StmtU { ForIn($2, $6, $8, $10)}
 ;

@@ -304,29 +304,24 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) : store =
     //     loop store i1
     | ForIn _ -> failwith "forin not done"
     | Dowhile (body, e) ->
-        // 先做一次DO 
         let store = exec body locEnv gloEnv store
-        //定义 While循环辅助函数 loop
         let rec loop store1 =
-            
-            //求值 循环条件,注意变更环境 store
             let (v, store2) = eval e locEnv gloEnv store1
-            // 继续循环
             if v <> 0 then
                 loop (exec body locEnv gloEnv store2)
             else
-                store2 //退出循环返回 环境store2
+                store2 
 
         loop store 
     | Dountil (body, e) -> 
-        let store = exec body locEnv gloEnv store
         let rec loop store1 =
             let (v, store2) = eval e locEnv gloEnv store1
-            if v = 0 then
+            if v = 0 then 
                 loop (exec body locEnv gloEnv store2)
-            else
-                store2
-        loop store   
+            else 
+                store2    
+
+        loop (exec body locEnv gloEnv store)
 
 and stmtordec stmtordec locEnv gloEnv store =
     match stmtordec with

@@ -131,16 +131,22 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) : instr list =
       let labtest  = newLabel()
       [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
       @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
-    | DoWhile(body, e) ->
+    | Dowhile(body, e) ->
       let labbegin = newLabel()
       let labtest  = newLabel()
       cStmt body varEnv funEnv @ [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
       @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
-    | Dountil(body,e)->
-      let labbegin = newLabel()
-      let labtest  = newLabel()
-      cStmt body varEnv funEnv @ [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
-      @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
+    | Dountil (body, e) ->
+        let labbegin = newLabel ()
+        let labtest = newLabel ()
+
+        cStmt body varEnv funEnv
+            @[ GOTO labtest] 
+                @[Label labbegin ] 
+                @ cStmt body varEnv funEnv
+                @ [ Label labtest ] 
+                @ cExpr e varEnv funEnv  
+                @ [ IFZERO labbegin ]
     | For(e1, e2, e3, body) ->         
       let labbegin = newLabel()
       let labtest  = newLabel()
@@ -170,26 +176,6 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) : instr list =
       [RET (snd varEnv - 1)]
     | Return (Some e) -> 
       cExpr e varEnv funEnv @ [RET (snd varEnv)]
-    | Switch(e1, caseList) ->
-      let lab = newLabel()
-      let tmp = cExpr e1 varEnv funEnv 
-      let rec getcode cases =
-        match cases with
-        | [] -> []
-        | (e, case)::es -> 
-          let sublab = newLabel()
-          tmp @ (cExpr e varEnv funEnv) @ [EQ] @ [IFZERO sublab] @ (cStmt case varEnv funEnv) @ [GOTO lab] @ [Label sublab] @ getcode es
-      (getcode caseList) @ [Label lab]
-    | SwitchDefault(e1, caseList, def) ->
-      let lab = newLabel()
-      let tmp = cExpr e1 varEnv funEnv 
-      let rec getcode cases =
-        match cases with
-        | [] -> cStmt def varEnv funEnv
-        | (e, case)::es -> 
-          let sublab = newLabel()
-          tmp @ (cExpr e varEnv funEnv) @ [EQ] @ [IFZERO sublab] @ (cStmt case varEnv funEnv) @ [GOTO lab] @ [Label sublab] @ getcode es
-      (getcode caseList) @ [Label lab]
 
       
       
@@ -349,7 +335,7 @@ let cProgram (Prog topdecs) : instr list =
     let (mainlab, _, mainparams) = lookup funEnv "main"
     let argc = List.length mainparams
     globalInit 
-    // @ [LDARGS; CALL(argc, mainlab); STOP] 
+    @ [LDARGS argc; CALL(argc, mainlab); STOP] 
     @ List.concat functions
 
 (* Compile a complete micro-C and write the resulting instruction list

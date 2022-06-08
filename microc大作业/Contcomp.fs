@@ -111,7 +111,21 @@ let rec addCST i C =    (* 添加操作符 *)
     | (0, IFNZRO lab :: C1) -> C1
     | (_, IFNZRO lab :: C1) -> addGOTO lab C1
     | _                     -> CSTI i :: C
-            
+
+let rec addIFZERO lab C =
+    match C with
+    | (GOTO lab1 :: Label lab2 :: C1) -> if lab = lab2 then
+                                                        IFNZRO lab1 :: Label lab :: C1
+                                                        else IFZERO lab :: C
+    | _ -> IFZERO lab :: C
+
+let rec addIFNZRO lab C =
+    match C with
+    | (GOTO lab1 :: Label lab2 :: C1) -> if lab = lab2 then
+                                                        IFZERO lab1 :: Label lab :: C1
+                                                        else IFNZRO lab :: C
+    | _ -> IFNZRO lab :: C
+
 (* ------------------------------------------------------------------- *)
 
 (* Simple environment operations *)
@@ -203,7 +217,7 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
       let (jumptest, C1) = 
            makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: C))
       addJump jumptest (Label labbegin :: cStmt body varEnv funEnv C1)
-    | DoWhile(body, e) ->
+    | Dowhile(body, e) ->
       let labbegin = newLabel()
       let f = cStmt body varEnv funEnv C
       let (jumptest, C1) = 
@@ -250,6 +264,9 @@ and bStmtordec stmtOrDec varEnv : bstmtordec * VarEnv =
     | Dec (typ, x) ->
       let (varEnv1, code) = allocate Locvar (typ, x) varEnv 
       (BDec code, varEnv1)
+    | DecAssign (typ, x, e) ->
+        let (varEnv1, code) = allocate Locvar (typ, x) varEnv 
+        (BDec (cAccess (AccVar(x)) varEnv1 [] [] ), varEnv1)
 
 (* Compiling micro-C expressions: 
 
@@ -270,8 +287,8 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
     match e with
     | PreInc acc     -> cAccess acc varEnv funEnv ( [DUP] @ [LDI] @ [CSTI 1] @ [ADD] @ [STI] @ C)
     | PreDec acc     -> cAccess acc varEnv funEnv ( [DUP] @ [LDI] @ [CSTI 1] @ [SUB] @ [STI] @ C)
-    | PostInc acc -> cAccess acc varEnv funEnv ([STI] @ [DUP] @ [LDI] @ [CSTI 1] @ [ADD] @ C)
-    | PostDec acc -> cAccess acc varEnv funEnv ([STI] @ [DUP] @ [LDI] @ [CSTI 1] @ [SUB] @ C)
+    | PostInc acc -> cAccess acc varEnv funEnv ([DUP] @ [LDI] @ [SWAP] @ [DUP] @ [LDI] @ [CSTI 1] @ [ADD] @ [STI] @ C @ [INCSP -1])
+    | PostDec acc -> cAccess acc varEnv funEnv ([DUP] @ [LDI] @ [SWAP] @ [DUP] @ [LDI] @ [CSTI 1] @ [SUB] @ [STI] @ C @ [INCSP -1])
     | Access acc     -> cAccess acc varEnv funEnv (LDI :: C)
     | Assign(acc, e) -> cAccess acc varEnv funEnv (cExpr e varEnv funEnv (STI :: C))
     | AssignPrim(ope, acc, e) ->
